@@ -1341,7 +1341,7 @@ function renderEnhancedMemberDashboard(m,records,payments,statusResult){
 <label style="display:block;font-weight:800;margin-bottom:5px">MESSAGE</label>
 <textarea id="fcMemberSupportMessage" rows="5" placeholder="Write your message..." style="width:100%;padding:11px;border:1px solid #ccd7d1;border-radius:9px;box-sizing:border-box"></textarea>
 <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
-<button type="button" id="fcMemberSupportSendBtn" class="fc-small-action">SEND MESSAGE</button>
+<button type="button" id="fcMemberSupportSendBtn" class="fc-small-action" onclick="window.fcMemberSupportSend()">SEND MESSAGE</button>
 <button type="button" id="fcMemberSupportCancelBtn" class="fc-small-action">CANCEL</button>
 </div></div>
 <div id="fcMemberSupportList"><div class="fc-empty-panel">Loading your support conversations...</div></div>
