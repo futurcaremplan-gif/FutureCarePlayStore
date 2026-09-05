@@ -1,0 +1,42 @@
+name: Build FutureCare Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10'
+
+      - name: Extract Android project
+        run: |
+          unzip -q FutureCarePlayStore_Android_Project.zip
+          echo "PROJECT_DIR=$GITHUB_WORKSPACE/FutureCarePlayStore" >> "$GITHUB_ENV"
+
+      - name: Build FutureCare APK
+        run: |
+          cd "$PROJECT_DIR"
+          gradle assembleDebug --no-daemon
+
+      - name: Upload FutureCare APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: FutureCare-debug-APK
+          path: ${{ env.PROJECT_DIR }}/app/build/outputs/apk/debug/app-debug.apk
