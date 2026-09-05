@@ -3636,18 +3636,65 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     }catch(e){alert('Unable to update support status:\\n\\n'+(e.message||e))}
   }
   window.fcOwnerSupportReply=async function(){
-    if(!selected)return;
-    const box=S('fcSupportReplyText'),err=S('fcSupportReplyError');
-    const msg=(box&&box.value||'').trim();if(!msg){if(err)err.textContent='Please enter a reply.';return}
-    if(err)err.textContent='';
-    try{
-      await req(SUPABASE_URL+'/rest/v1/'+MSGS,{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({thread_id:selected.id,sender_user_id:null,sender_role:'OWNER',message:msg})});
-      box.value='';
-      await req(SUPABASE_URL+'/rest/v1/'+THREADS+'?id=eq.'+encodeURIComponent(selected.id),{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify({updated_at:new Date().toISOString()})});
-      await load();
-      await open(selected.id,true);
-    }catch(e){if(err)err.textContent='Unable to send reply: '+(e.message||e)}
+  if(!selected)return;
+
+  const box=S('fcSupportReplyText');
+  const err=S('fcSupportReplyError');
+  const btn=document.querySelector('.fc-support-send');
+  const msg=(box&&box.value||'').trim();
+
+  if(!msg){
+    if(err)err.textContent='Please enter a reply.';
+    return;
   }
+
+  if(btn&&btn.disabled)return;
+
+  if(btn){
+    btn.disabled=true;
+    btn.textContent='SENDING...';
+  }
+
+  if(err)err.textContent='';
+
+  try{
+    await req(SUPABASE_URL+'/rest/v1/'+MSGS,{
+      method:'POST',
+      headers:{Prefer:'return=representation'},
+      body:JSON.stringify({
+        thread_id:selected.id,
+        sender_user_id:null,
+        sender_role:'OWNER',
+        message:msg
+      })
+    });
+
+    if(box)box.value='';
+
+    await req(
+      SUPABASE_URL+'/rest/v1/'+THREADS+
+      '?id=eq.'+encodeURIComponent(selected.id),
+      {
+        method:'PATCH',
+        headers:{Prefer:'return=representation'},
+        body:JSON.stringify({
+          updated_at:new Date().toISOString()
+        })
+      }
+    );
+
+    await load();
+    await open(selected.id,true);
+
+  }catch(e){
+    if(err)err.textContent='Unable to send reply: '+(e.message||e);
+  }finally{
+    if(btn){
+      btn.disabled=false;
+      btn.textContent='↩ SEND REPLY';
+    }
+  }
+}
 
   window.fcOwnerSupportNewMessage=function(){const m=S('fcSupportNewModal');if(m){m.classList.add('open');m.setAttribute('aria-hidden','false')}}
   window.fcOwnerSupportCloseNew=function(){const m=S('fcSupportNewModal');if(m){m.classList.remove('open');m.setAttribute('aria-hidden','true')}}
