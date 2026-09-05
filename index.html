@@ -3509,7 +3509,7 @@ async function sendS(){
  try{
   if(st){st.style.display='block';st.textContent='Sending...'}
   const uid=(typeof getUserIdFromToken==='function'?getUserIdFromToken():'')||null;
-  const tr=await req(SUPABASE_URL+'/rest/v1/'+T,{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({plan_holder_id:currentMember.id,sender_user_id:uid,sender_role:'MEMBER',subject:sub,status:'OPEN',priority:'NORMAL',preview:msg.slice(0,180)})});
+  const tr=await req(SUPABASE_URL+'/rest/v1/'+T,{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({plan_holder_id:currentMember.id,sender_user_id:uid,sender_role:'MEMBER',recipient_role:'OWNER',recipient_user_id:null,recipient_plan_holder_id:null,subject:sub,status:'OPEN',priority:'NORMAL',preview:msg.slice(0,180)})
   const thread=Array.isArray(tr)?tr[0]:tr;if(!thread?.id)throw new Error('Support conversation was not created.');
   await req(SUPABASE_URL+'/rest/v1/'+M,{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({thread_id:thread.id,sender_user_id:uid,sender_role:'MEMBER',message:msg})});
   $('fcMemberSupportSubject').value='';$('fcMemberSupportMessage').value='';$('fcMemberSupportNewBox').style.display='none';
