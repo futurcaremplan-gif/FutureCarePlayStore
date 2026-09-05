@@ -3695,7 +3695,44 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     }
   }
 }
+window.fcOwnerSupportDelete=async function(){
+  if(!selected)return;
 
+  if(!confirm('Delete this entire support conversation and all of its messages?'))return;
+
+  const id=selected.id;
+
+  try{
+    await req(
+      SUPABASE_URL+'/rest/v1/'+MSGS+
+      '?thread_id=eq.'+encodeURIComponent(id),
+      {
+        method:'DELETE',
+        headers:{Prefer:'return=minimal'}
+      }
+    );
+
+    await req(
+      SUPABASE_URL+'/rest/v1/'+THREADS+
+      '?id=eq.'+encodeURIComponent(id),
+      {
+        method:'DELETE',
+        headers:{Prefer:'return=minimal'}
+      }
+    );
+
+    selected=null;
+    await load();
+
+    const conv=S('fcSupportConversation');
+    if(conv){
+      conv.innerHTML='<div class="fc-support-empty"><div class="fc-support-empty-icon">📭</div><b>Conversation deleted</b><span>Select another conversation to continue.</span></div>';
+    }
+
+  }catch(e){
+    alert('Unable to delete conversation:\n\n'+(e.message||e));
+  }
+}
   window.fcOwnerSupportNewMessage=function(){const m=S('fcSupportNewModal');if(m){m.classList.add('open');m.setAttribute('aria-hidden','false')}}
   window.fcOwnerSupportCloseNew=function(){const m=S('fcSupportNewModal');if(m){m.classList.remove('open');m.setAttribute('aria-hidden','true')}}
   window.fcOwnerSupportSendNew=async function(){
