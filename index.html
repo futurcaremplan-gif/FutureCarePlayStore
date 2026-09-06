@@ -849,7 +849,6 @@ tr:hover{background:#f5faf7}
 <button data-owner-section="documents" onclick="fcOwnerNavigate('documents',this)" type="button">📄 <span>Documents</span></button>
 <div class="fc-owner-nav-label">COMMUNICATION</div>
 <button data-owner-section="announcements" onclick="fcOwnerNavigate('announcements',this)" type="button">📢 <span>Announcements</span><i id="fcOwnerAnnBadge">0</i></button>
-<button data-owner-section="support" onclick="fcOwnerNavigate('support',this)" type="button">📞 <span>Support / Messages</span></button>
 <div class="fc-owner-nav-label">ADMINISTRATION</div>
 <button data-owner-section="settings" onclick="fcOwnerNavigate('settings',this)" type="button">⚙️ <span>Portal Settings</span></button>
 <button onclick="logout()" type="button">↪ <span>Logout</span></button>
@@ -917,52 +916,7 @@ tr:hover{background:#f5faf7}
 <section class="fc-static-section" id="ownerDocumentsStatic"><div class="fc-owner-static-card"><h2>📄 Documents</h2><div class="fc-owner-static-sub">FutureCare documents and payment proof references.</div><p>Payment proof files are attached to payment records and can be reviewed from the payment records.</p></div></section>
 <section class="fc-static-section" id="ownerAnnouncementsStatic"><div class="fc-owner-static-card"><h2>📢 Announcements</h2><div class="fc-owner-static-sub">Create an announcement for FutureCare members.</div>
 <form class="fc-owner-static-form" onsubmit="return window.fcOwnerStaticAnnouncement(event)"><label>Title<input id="staticAnnTitle" required=""/></label><label>Message<textarea id="staticAnnMessage" required="" rows="5"></textarea></label><label>Audience<select id="staticAnnAudience"><option value="ALL_MEMBERS">All Members</option><option value="ALL">Members &amp; Agents</option><option value="ALL_AGENTS">All Agents</option></select></label><label>Priority<select id="staticAnnPriority"><option>NORMAL</option><option>IMPORTANT</option><option>URGENT</option></select></label><label>Expires (optional)<input id="staticAnnExpires" type="date"/></label><button type="submit">PUBLISH ANNOUNCEMENT</button></form><div id="staticAnnStatus"></div></div></section>
-<section class="fc-static-section" id="ownerSupportStatic">
-  <div class="fc-support-shell">
-    <div class="fc-support-head">
-      <div>
-        <h2>📞 Support / Messages</h2>
-        <p>Manage member and agent support conversations, replies, and status.</p>
-      </div>
-      <button type="button" class="fc-support-new" onclick="fcOwnerSupportNewMessage()">＋ New Message</button>
-    </div>
 
-    <div class="fc-support-stats" id="fcSupportStats">
-      <div><small>TOTAL CONVERSATIONS</small><strong id="fcSupportTotal">0</strong></div>
-      <div><small>OPEN</small><strong id="fcSupportOpen">0</strong></div>
-      <div><small>IN PROGRESS</small><strong id="fcSupportInProgress">0</strong></div>
-      <div><small>RESOLVED</small><strong id="fcSupportResolved">0</strong></div>
-    </div>
-
-    <div class="fc-support-toolbar">
-      <input id="fcSupportSearch" type="search" placeholder="Search name, Client ID, subject, message..." oninput="fcOwnerSupportRender()">
-      <select id="fcSupportStatusFilter" onchange="fcOwnerSupportRender()">
-        <option value="ALL">All Status</option>
-        <option value="OPEN">Open</option>
-        <option value="IN_PROGRESS">In Progress</option>
-        <option value="RESOLVED">Resolved</option>
-      </select>
-    </div>
-
-    <div class="fc-support-layout">
-      <div class="fc-support-list-card">
-        <div class="fc-support-list-head"><b>Support Inbox</b><span id="fcSupportListCount">0 conversations</span></div>
-        <div id="fcSupportList"><div class="fc-support-empty">Loading support inbox...</div></div>
-      </div>
-      <div class="fc-support-conversation-card" id="fcSupportConversation">
-        <div class="fc-support-empty">
-          <div class="fc-support-empty-icon">💬</div>
-          <b>Select a conversation</b>
-          <span>Choose a support concern from the inbox to view the full conversation.</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="fc-support-db-note" id="fcSupportDbNote">
-      Connecting to the existing Supabase <b>support_threads</b> and <b>support_messages</b> tables.
-    </div>
-  </div>
-</section>
 <section class="fc-static-section" id="ownerSettingsStatic">
 <div class="fc-settings-shell">
   <div class="fc-settings-head"><div><h2>⚙️ Portal Settings</h2><p>Manage FutureCare portal information, notifications, support details, and owner preferences.</p></div></div>
@@ -1157,7 +1111,6 @@ tr:hover{background:#f5faf7}
 <button onclick="fcMemberGo('memberBenefitsSection')">🎁 <span>Benefits &amp; Inclusions</span></button>
 <button onclick="fcMemberGo('memberDocumentsSection')">▤ <span>Documents</span></button>
 <button onclick="fcMemberGo('memberAnnouncementsSection')">♢ <span>Announcements</span></button>
-<button onclick="fcMemberGo('memberSupportSection')">💬 <span>Support / Messages</span></button>
 <button onclick="logout()">↪ <span>Logout</span></button>
 </nav>
 </aside>
@@ -1180,8 +1133,7 @@ function fcMemberGo(id){
   const benefits=document.getElementById('memberBenefitsSection');
   const documents=document.getElementById('memberDocumentsSection');
   const announcements=document.getElementById('memberAnnouncementsSection');
-  const support=document.getElementById('memberSupportSection');
-  const all=[summary,payNow,progress,profile,payment,schedule,benefits,documents,announcements,support];
+  const all=[summary,payNow,progress,profile,payment,schedule,benefits,documents,announcements];
   all.forEach(x=>{if(x)x.style.setProperty('display','none','important')});
   if(footer)footer.style.setProperty('display','none','important');
   if(status)status.style.setProperty('display','none','important');
@@ -1211,7 +1163,7 @@ function fcMemberGo(id){
 
   document.querySelectorAll('.fc-member-nav button').forEach(b=>b.classList.remove('active'));
   const buttons=document.querySelectorAll('.fc-member-nav button');
-  const map=['memberTop','memberInfoSection','memberPlanSection','memberPaymentSection','memberScheduleSection','memberBenefitsSection','memberDocumentsSection','memberAnnouncementsSection','memberSupportSection'];
+  const map=['memberTop','memberInfoSection','memberPlanSection','memberPaymentSection','memberScheduleSection','memberBenefitsSection','memberDocumentsSection','memberAnnouncementsSection'];
   const pos=map.indexOf(id);
   if(pos>=0 && buttons[pos])buttons[pos].classList.add('active');
 
@@ -1328,28 +1280,7 @@ function renderEnhancedMemberDashboard(m,records,payments,statusResult){
 <div class="fc-panel-title"><h2>ANNOUNCEMENTS</h2><span>♢</span></div>
 <div class="fc-empty-panel">📢 <b>FutureCare announcements</b><br/><span>New member announcements will appear here.</span></div>
 </div>
-<div class="fc-panel" id="memberSupportSection">
-<div class="fc-panel-title"><div><h2>SUPPORT / MESSAGES</h2><p>Send a message to FutureCare and view replies.</p></div><span>💬</span></div>
-<div id="fcMemberSupportStatus" class="summary" style="display:none"></div>
-<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
-<button type="button" id="fcMemberSupportNewBtn" class="fc-small-action" onclick="document.getElementById('fcMemberSupportNewBox').style.display='block'">＋ NEW MESSAGE</button>
-<button type="button" id="fcMemberSupportRefreshBtn" class="fc-small-action">↻ REFRESH</button>
-</div>
-<div id="fcMemberSupportNewBox" style="display:none;border:1px solid #dfe7e2;border-radius:12px;padding:14px;margin-bottom:16px;background:#fafcfb">
-<label style="display:block;font-weight:800;margin-bottom:5px">SUBJECT</label>
-<input id="fcMemberSupportSubject" type="text" placeholder="What do you need help with?" style="width:100%;padding:11px;border:1px solid #ccd7d1;border-radius:9px;box-sizing:border-box;margin-bottom:10px">
-<label style="display:block;font-weight:800;margin-bottom:5px">MESSAGE</label>
-<textarea id="fcMemberSupportMessage" rows="5" placeholder="Write your message..." style="width:100%;padding:11px;border:1px solid #ccd7d1;border-radius:9px;box-sizing:border-box"></textarea>
-<div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
-<button type="button" id="fcMemberSupportSendBtn" class="fc-small-action" onclick="window.fcMemberSupportSend()">SEND MESSAGE</button>
-<button type="button" id="fcMemberSupportCancelBtn" class="fc-small-action">CANCEL</button>
-</div></div>
-<div id="fcMemberSupportList"><div class="fc-empty-panel">Loading your support conversations...</div></div>
-<div style="margin-top:18px;border-top:1px solid #e2e9e5;padding-top:15px"><h3 style="margin:0 0 10px;color:#075c40">CONTACT US</h3>
-<div class="fc-contact-grid"><div><b>FutureCare Memorial Plan Service</b><span>For inquiries and member assistance</span></div>
-<div><b>0912 443 5082</b><span>Primary contact</span></div>
-<div><b>0930 078 9931</b><span>Alternate contact</span></div></div></div>
-</div>
+
 </section>
 <div class="fc-member-footer"><span>🛡️ FutureCare Memorial Plan Service is committed to serve you and your family.</span><span>🔒 VIEW ONLY — Your member information and payment records cannot be edited from this dashboard.</span></div>
 </div>
@@ -3018,7 +2949,7 @@ document.addEventListener('keydown', function(e){
       if(name==='members'){show('fcOwnerDashboardView');var t=E('membersTable');if(t)setTimeout(function(){t.scrollIntoView({behavior:'smooth',block:'start'})},30);return}
       if(name==='agents'){show('fcOwnerAgentsOnlyView');await loadAgents();return}
       if(name==='announcements'){show('fcOwnerAnnouncementView');if(typeof window.fcOwnerLoadAnnouncements==='function')await window.fcOwnerLoadAnnouncements();return}
-      var staticMap={plans:'ownerPlansStatic',benefits:'ownerBenefitsStatic',documents:'ownerDocumentsStatic',support:'ownerSupportStatic',settings:'ownerSettingsStatic'};
+      var staticMap={plans:'ownerPlansStatic',benefits:'ownerBenefitsStatic',documents:'ownerDocumentsStatic',settings:'ownerSettingsStatic'};
       if(staticMap[name]){showStatic(staticMap[name]);return}
       show('fcOwnerSimpleView');await renderOperational(name);
     }catch(e){
@@ -3180,7 +3111,7 @@ document.addEventListener('keydown', function(e){
     var map={
       payments:'ownerPaymentsStatic', monitoring:'ownerMonitoringStatic', lapses:'ownerLapsesStatic',
       reports:'ownerReportsStatic', plans:'ownerPlansStatic', benefits:'ownerBenefitsStatic',
-      documents:'ownerDocumentsStatic', support:'ownerSupportStatic', settings:'ownerSettingsStatic'
+      documents:'ownerDocumentsStatic', settings:'ownerSettingsStatic'
     };
     if(map[name]){
       var st=E(map[name]);
@@ -3252,11 +3183,11 @@ document.addEventListener('keydown', function(e){
   var staticMap={
     payments:'ownerPaymentsStatic', monitoring:'ownerMonitoringStatic', lapses:'ownerLapsesStatic',
     reports:'ownerReportsStatic', plans:'ownerPlansStatic', benefits:'ownerBenefitsStatic',
-    documents:'ownerDocumentsStatic', support:'ownerSupportStatic', settings:'ownerSettingsStatic'
+    documents:'ownerDocumentsStatic', settings:'ownerSettingsStatic'
   };
   var allIds=['fcOwnerDashboardView','fcOwnerAgentsOnlyView','fcOwnerAnnouncementView','fcOwnerSimpleView',
     'ownerAgentsStatic','ownerPaymentsStatic','ownerMonitoringStatic','ownerLapsesStatic','ownerReportsStatic',
-    'ownerPlansStatic','ownerBenefitsStatic','ownerDocumentsStatic','ownerAnnouncementsStatic','ownerSupportStatic','ownerSettingsStatic',
+    'ownerPlansStatic','ownerBenefitsStatic','ownerDocumentsStatic','ownerAnnouncementsStatic','ownerSettingsStatic',
     'ownerAgentCommissionsStatic'];
   function E(id){return document.getElementById(id);}
   function closeMenu(){var s=E('fcOwnerSidebar');if(s)s.classList.remove('open');var o=E('fcOwnerMenuOverlay');if(o)o.classList.remove('open');}
@@ -5178,7 +5109,7 @@ if ('serviceWorker' in navigator) {
       '<button data-agent-menu="lapses" type="button">⚠️ <span>Lapses / Delinquencies</span></button>'+
       '<button data-agent-menu="commissions" type="button">💰 <span>My Commissions</span></button>'+
       '<button data-agent-menu="announcements" type="button">📢 <span>Announcements</span></button>'+
-      '<button data-agent-menu="support" type="button">📞 <span>Support / Messages</span></button>'+
+      ''+
       '<button data-agent-menu="profile" type="button">👤 <span>My Profile</span></button>'+
       '<button data-agent-logout type="button">↪ <span>Logout</span></button>'+
       '</nav>';
@@ -5407,142 +5338,6 @@ if ('serviceWorker' in navigator) {
     }catch(e){annBody='<div class="fc-agent-empty">Announcements are not available: '+escA(e.message||'Unable to load announcements.')+'</div>';}
     card(annSec,'📢 Announcements','Published FutureCare announcements available to your Agent account.',annBody);
 
-    /* SUPPORT: Agent receives conversations from assigned plan holders
-       and can also message/reply to Owner. */
-    var supportSec=root.querySelector('[data-agent-section="support"]');
-    var supportBody='<div class="fc-agent-empty">Loading support conversations...</div>';
-    card(supportSec,'📞 Support / Messages','Messages from your assigned plan holders and conversations with the FutureCare Owner.',supportBody);
-
-    try{
-      var agentUid=(typeof getUserIdFromToken==='function'?getUserIdFromToken():'')||null;
-      var assignedIds={};
-      (Array.isArray(holders)?holders:[]).forEach(function(h){
-        if(h&&h.id) assignedIds[String(h.id)]=h;
-      });
-
-      /* Threads are the source of truth. A thread belongs to a plan holder
-         through plan_holder_id; an Agent-created thread belongs to the
-         current Agent through sender_user_id. */
-      var ats=await getAll('/rest/v1/support_threads?select=*&order=updated_at.desc');
-      ats=Array.isArray(ats)?ats:[];
-
-      var mine=ats.filter(function(t){
-        var pid=t.plan_holder_id!=null?String(t.plan_holder_id):'';
-        var sender=String(t.sender_role||'').toUpperCase();
-        var uid=t.sender_user_id!=null?String(t.sender_user_id):'';
-        return !!assignedIds[pid] || (sender==='AGENT' && agentUid && uid===String(agentUid));
-      });
-
-      var supportRows=mine.map(function(t){
-        var h=assignedIds[String(t.plan_holder_id)]||{};
-        var fromMember=!!h.id;
-        var label=fromMember?(h.full_name||'Plan Holder'):'Owner Conversation';
-        return '<button type="button" data-agent-thread="'+escA(t.id)+'" style="display:block;width:100%;text-align:left;border:1px solid #dce5df;background:#fff;border-radius:10px;padding:13px;margin-bottom:10px;cursor:pointer">'+
-          '<div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><b style="color:#075c40">'+escA(t.subject||'Support Concern')+'</b><small>'+escA((t.updated_at||t.created_at||'').toString().slice(0,16).replace('T',' '))+'</small></div>'+
-          '<div style="margin-top:5px;color:#4e6259"><b>'+escA(label)+'</b>'+(h.client_id?' · '+escA(h.client_id):'')+'</div>'+
-          '<div style="margin-top:5px;color:#68766f">'+escA(t.preview||'')+'</div>'+
-          '<div style="margin-top:7px;font-size:12px;font-weight:800">'+escA(String(t.status||'OPEN').toUpperCase())+'</div>'+
-        '</button>';
-      }).join('');
-
-      supportBody=
-        '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">'+
-        '<button type="button" class="fc-small-action" id="fcAgentSupportNewBtn">＋ NEW MESSAGE TO OWNER</button>'+
-        '<button type="button" class="fc-small-action" id="fcAgentSupportRefreshBtn">↻ REFRESH</button></div>'+
-        '<div id="fcAgentSupportNewBox" style="display:none;border:1px solid #dce5df;border-radius:10px;padding:14px;margin-bottom:14px">'+
-        '<input id="fcAgentSupportSubject" placeholder="Subject" style="width:100%;box-sizing:border-box;padding:10px;border:1px solid #ccd7d1;border-radius:8px;margin-bottom:9px">'+
-        '<textarea id="fcAgentSupportMessage" rows="4" placeholder="Write your message to Owner..." style="width:100%;box-sizing:border-box;padding:10px;border:1px solid #ccd7d1;border-radius:8px"></textarea>'+
-        '<button type="button" class="fc-small-action" id="fcAgentSupportSendBtn" style="margin-top:8px">SEND</button>'+
-        '<div id="fcAgentSupportError" style="color:#b42318;margin-top:7px"></div></div>'+
-        '<div id="fcAgentSupportList">'+(supportRows||'<div class="fc-agent-empty">No support conversations yet.</div>')+'</div>';
-
-      card(supportSec,'📞 Support / Messages','Messages from your assigned plan holders and conversations with the FutureCare Owner.',supportBody);
-
-      async function openAgentThread(id){
-        var t=mine.find(function(x){return String(x.id)===String(id);});
-        if(!t)return;
-        var box=document.getElementById('fcAgentSupportList');
-        if(!box)return;
-        try{
-          var mm=await getAll('/rest/v1/support_messages?select=*&thread_id=eq.'+encodeURIComponent(id)+'&order=created_at.asc');
-          var h=assignedIds[String(t.plan_holder_id)]||{};
-          var title=h.full_name||'Owner Conversation';
-          var bubbles=(Array.isArray(mm)?mm:[]).map(function(x){
-            var role=String(x.sender_role||'USER').toUpperCase();
-            var own=role==='AGENT';
-            return '<div style="padding:11px;border:1px solid #dfe7e2;border-radius:10px;margin:7px 0;background:'+(own?'#e9f6ef':'#f5f7f6')+'">'+
-              '<b style="color:#075c40">'+escA(role)+'</b>'+
-              '<div style="white-space:pre-wrap;margin-top:5px">'+escA(x.message||'')+'</div>'+
-              '<small style="display:block;margin-top:5px;color:#68766f">'+escA((x.created_at||'').toString().slice(0,16).replace('T',' '))+'</small></div>';
-          }).join('');
-          box.innerHTML=
-            '<button type="button" class="fc-small-action" id="fcAgentSupportBack">← BACK</button>'+
-            '<h3 style="color:#075c40;margin:14px 0 4px">'+escA(t.subject||'Support Concern')+'</h3>'+
-            '<div style="color:#68766f;margin-bottom:10px">'+escA(title)+(h.client_id?' · '+escA(h.client_id):'')+' · '+escA(String(t.status||'OPEN').toUpperCase())+'</div>'+
-            '<div>'+bubbles+'</div>'+
-            '<textarea id="fcAgentSupportReply" rows="4" placeholder="Write a reply..." style="width:100%;box-sizing:border-box;padding:10px;border:1px solid #ccd7d1;border-radius:8px"></textarea>'+
-            '<button type="button" class="fc-small-action" id="fcAgentSupportReplyBtn" style="margin-top:8px">SEND REPLY</button>';
-
-          document.getElementById('fcAgentSupportBack').onclick=function(){renderDynamic();};
-          document.getElementById('fcAgentSupportReplyBtn').onclick=async function(){
-            var msg=(document.getElementById('fcAgentSupportReply').value||'').trim();
-            if(!msg)return;
-            try{
-              await req(SUPABASE_URL+'/rest/v1/support_messages',{
-                method:'POST',headers:{Prefer:'return=representation'},
-                body:JSON.stringify({thread_id:id,sender_user_id:agentUid,sender_role:'AGENT',message:msg})
-              });
-              await req(SUPABASE_URL+'/rest/v1/support_threads?id=eq.'+encodeURIComponent(id),{
-                method:'PATCH',headers:{Prefer:'return=representation'},
-                body:JSON.stringify({updated_at:new Date().toISOString(),status:'OPEN'})
-              });
-              await renderDynamic();
-            }catch(e){alert('Unable to send reply: '+(e.message||e));}
-          };
-        }catch(e){
-          box.innerHTML='<div class="fc-agent-empty">Unable to open conversation: '+escA(e.message||e)+'</div>';
-        }
-      }
-
-      supportSec.querySelectorAll('[data-agent-thread]').forEach(function(b){
-        b.onclick=function(){openAgentThread(b.dataset.agentThread);};
-      });
-
-      var newBtn=document.getElementById('fcAgentSupportNewBtn');
-      if(newBtn)newBtn.onclick=function(){
-        var x=document.getElementById('fcAgentSupportNewBox');if(x)x.style.display='block';
-      };
-      var refreshBtn=document.getElementById('fcAgentSupportRefreshBtn');
-      if(refreshBtn)refreshBtn.onclick=function(){renderDynamic();};
-
-      var sendBtn=document.getElementById('fcAgentSupportSendBtn');
-      if(sendBtn)sendBtn.onclick=async function(){
-        var sub=(document.getElementById('fcAgentSupportSubject').value||'').trim();
-        var msg=(document.getElementById('fcAgentSupportMessage').value||'').trim();
-        var er=document.getElementById('fcAgentSupportError');
-        if(!sub||!msg){er.textContent='Subject and message are required.';return;}
-        try{
-          er.textContent='Sending...';
-          var tr=await req(SUPABASE_URL+'/rest/v1/support_threads',{
-            method:'POST',headers:{Prefer:'return=representation'},
-            body:JSON.stringify({
-              plan_holder_id:null,sender_user_id:agentUid,sender_role:'AGENT',
-              subject:sub,status:'OPEN',priority:'NORMAL',preview:msg.slice(0,180)
-            })
-          });
-          var th=Array.isArray(tr)?tr[0]:tr;
-          if(!th||!th.id)throw new Error('Support conversation was not created.');
-          await req(SUPABASE_URL+'/rest/v1/support_messages',{
-            method:'POST',headers:{Prefer:'return=representation'},
-            body:JSON.stringify({thread_id:th.id,sender_user_id:agentUid,sender_role:'AGENT',message:msg})
-          });
-          await renderDynamic();
-        }catch(e){er.textContent='Unable to send: '+(e.message||e);}
-      };
-    }catch(e){
-      supportBody='<div class="fc-agent-empty">Unable to load support conversations: '+escA(e.message||e)+'</div>';
-      card(supportSec,'📞 Support / Messages','Messages from your assigned plan holders and conversations with the FutureCare Owner.',supportBody);
-    }
     var a={};try{if(typeof currentAgent!=='undefined'&&currentAgent)a=currentAgent;else a=window.currentAgent||{}}catch(e){a=window.currentAgent||{}}
     var prof='<div class="fc-agent-profile-grid"><div class="fc-agent-profile-item"><small>FULL NAME</small><strong>'+escA(a.full_name||'—')+'</strong></div><div class="fc-agent-profile-item"><small>AGENT ID / CODE</small><strong>'+escA(a.agent_code||'—')+'</strong></div><div class="fc-agent-profile-item"><small>STATUS</small><strong>'+escA(a.status||'—')+'</strong></div><div class="fc-agent-profile-item"><small>ACCOUNT</small><strong>Agent account</strong></div></div>';
     card(root.querySelector('[data-agent-section="profile"]'),'👤 My Profile','Your Agent account information.',prof);
