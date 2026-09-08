@@ -1214,7 +1214,28 @@ function renderEnhancedMemberDashboard(m,records,payments,statusResult){
   const planFields=[['Plan Type',m.plan_type],['Client ID',m.client_id],['Total Plan Amount',fcDashMoney(m.total_plan_amount)],['Monthly Payment',fcDashMoney(m.monthly_payment)],['Months Payable',m.months_payable],['Registration Fee',fcDashMoney(m.registration_fee)],['Contestability',m.contestability_months?m.contestability_months+' month(s)':null],['Agent',m.agent_name],['Promo Type',m.promo_type],['Cash Assistance',fcDashMoney(m.cash_assistance)]];
   if(e('memberPlanDetails'))e('memberPlanDetails').innerHTML=planFields.map(x=>'<div class="fc-plan-item"><small>'+esc(x[0])+'</small><b>'+esc(fcDashVal(x[1]))+'</b></div>').join('');
 
-  const benefits=['Half Glass Casket','9 Days Preservation','Flower Decoration','Tarpaulin','Deceased Attire','Granite Lapida','2 Candles','Last Night Viewing'];
+const packageCaskets={
+  'PACKAGE 1A':'Half Glass Flat Casket',
+  'PACKAGE 1':'Half Glass STOCO Casket',
+  'PACKAGE 2':'Half Glass Glossy Casket',
+  'PACKAGE 3':'Full Glass Glossy Casket',
+  'PACKAGE 4':'Full Glass Metal Casket',
+  'PACKAGE 5':'Full Glass Flexi Metal Casket'
+};
+
+const packageKey=String(m.plan_type||'').trim().toUpperCase();
+const casket=packageCaskets[packageKey]||'Casket';
+
+const benefits=[
+  casket,
+  '9 Days Preservation',
+  'Flower Decoration',
+  'Tarpaulin',
+  'Deceased Attire',
+  'Granite Lapida',
+  '2 Candles',
+  'Last Night Viewing'
+];
   if(e('memberBenefits'))e('memberBenefits').innerHTML=benefits.map(x=>'<div class="fc-benefit">'+esc(x)+'</div>').join('');
 }
 </script>
